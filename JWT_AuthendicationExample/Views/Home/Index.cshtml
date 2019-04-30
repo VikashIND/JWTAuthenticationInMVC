@@ -1,24 +1,89 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+﻿<div class="container container-fluid">
+    <div class="page-header">
+        <h1>JWT Authentication Example</h1>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    <div class="alert alert-info text-center">
+         UserName: admin
+         Password: admin
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    <div class="row form-horizontal">
+        <div class="for-group">
+            <label for="userName">UserName</label>
+            <input type="text" class="form-control" id="userName" />
+        </div>
+        <div class="for-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" />
+        </div>
+        <div class="for-group">
+            <br />
+            <button class="btn btn-primary" onclick="login()">Login</button>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+        <br />
+        <br />
     </div>
-</div>
+    <div class="row">
+        <div>
+            <input type="button" id="btnTest" class="btn btn-primary" value="Test" onclick="AuthorizationTest()" />
+            <br />
+            <br />
+
+            <div id="dvResult" class="alert alert-danger">
+
+            </div>
+        </div>
+
+    </div>
+
+</div> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    function AuthorizationTest() {
+        $.ajax({
+            url: "http://localhost:54317/api/Values",
+            type: 'GET',
+            contentType: 'application/json',
+            // Fetch the stored token from localStorage and set in the header
+            headers: {"Authorization": localStorage.getItem('token')},
+           // headers: { "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTU2NjA3MDU2LCJleHAiOjE1NTcyMTE4NTYsImlhdCI6MTU1NjYwNzA1NiwiaXNzIjoiaHR0cHM6Ly9ha2hpbHN5c3RlbXMuY29tIiwiYXVkIjoiaHR0cHM6Ly9ha2hpbHN5c3RlbXMuY29tIn0.Fh2rDwUCIpHsghSxdKGdlnO6c6BM85e-IkmRjLZ0HPo" },
+            success: function (res) {
+
+                console.log(JSON.stringify(res));
+                $('#dvResult').empty().append(JSON.stringify(res));
+            },
+            error: function (res) {
+                console.log(res);
+                $('#dvResult').empty().append(JSON.stringify(res));
+            }
+        });
+    }
+
+    function login() {
+        let obj = new Object();
+        obj.UserName = $('#userName').val();
+        obj.Password = $('#password').val();
+        $.ajax({
+            url: "http://localhost:54317/api/Login",
+            type: 'Post',
+            data: JSON.stringify(obj),
+            contentType: 'application/json',
+            success: function (res) {
+                localStorage.setItem('token', res);
+                console.log(JSON.stringify(res));
+                $('#dvResult').empty().append(JSON.stringify(res));
+                $('#userName').val('');
+                 $('#password').val('');
+            },
+            error: function (res) {
+                console.log(res);
+                $('#dvResult').empty().append(JSON.stringify(res));
+            }
+        });
+    }
+    function logout() {
+        localStorage.clear();
+        $('#dvResult').empty();
+    }
+</script>

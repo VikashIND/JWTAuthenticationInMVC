@@ -1,7 +1,9 @@
-﻿using System;
+﻿using JWT_AuthendicationExample.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace JWT_AuthendicationExample
 {
@@ -12,8 +14,12 @@ namespace JWT_AuthendicationExample
             // Web API configuration and services
 
             // Web API routes
+            var cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
+         
             config.MapHttpAttributeRoutes();
-
+            config.MessageHandlers.Add(new TokenValidationHandler());
+            
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
