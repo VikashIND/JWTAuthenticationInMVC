@@ -13,7 +13,15 @@ namespace JWT_AuthendicationExample.Controllers
         // GET api/values
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            var dataList = new List<string>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var rnd = new Random();
+                var result = rnd.Next();
+                dataList.Add("String : " +( result+i).ToString()+", ");
+            }
+            return dataList;
         }
 
         // GET api/values/5
